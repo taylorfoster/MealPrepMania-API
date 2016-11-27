@@ -13,6 +13,9 @@ class Recipe(models.Model):
     direction = models.CharField(max_length=100, blank=True, default='Stir')
     ingredient = models.CharField(max_length=100, blank=True, default='Balls')
     
+    class Meta:
+        ordering = ('created',)
+    
 class Direction(models.Model):
     recipe = models.ForeignKey(Recipe, related_name='+', blank=True, null=True)
     text = models.CharField(max_length=100, blank=True, default='Ball some meat')
@@ -23,6 +26,7 @@ class Ingredient(models.Model):
     name = models.CharField(max_length=100, blank=True, default='Meat')
     measurement = models.CharField(max_length=100, blank=True, default='3/4 cup')
     quantity = models.CharField(max_length=100, blank=True, default='1')
-
-    class Meta:
-        ordering = ('created',)
+    
+class GroceryList(models.Model):
+    isPurchased = models.BooleanField(default=False)
+    ingredient = models.ForeignKey(Ingredient, related_name='+', blank=True, null=True)

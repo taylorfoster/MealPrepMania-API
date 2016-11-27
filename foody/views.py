@@ -7,6 +7,9 @@ from foody.models import Direction
 from foody.serializers import DirectionSerializer
 from foody.models import Ingredient
 from foody.serializers import IngredientSerializer
+from foody.models import GroceryList
+from foody.serializers import GroceryListSerializer
+from django.http import JsonResponse
 
 @api_view(['GET', 'POST'])
 def snippet_list(request, format=None):
@@ -17,6 +20,7 @@ def snippet_list(request, format=None):
         snippets = Recipe.objects.all()
         serializer = FoodySerializer(snippets, many=True)
         return Response(serializer.data)
+        #return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
         serializer = FoodySerializer(data=request.data)

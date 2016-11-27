@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from foody.models import Recipe, Direction, Ingredient, LANGUAGE_CHOICES, STYLE_CHOICES
+from foody.models import Recipe, Direction, Ingredient, GroceryList, LANGUAGE_CHOICES, STYLE_CHOICES
 
         
 class IngredientSerializer(serializers.ModelSerializer):
@@ -21,6 +21,27 @@ class IngredientSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)
         instance.measurement = validated_data.get('measurement', instance.measurement)
         instance.quantity = validated_data.get('quantity', instance.quantity)
+        instance.save()
+        return instance
+        
+class GroceryListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GroceryList
+        fields = ('isPurchased', 'ingredient',)
+        
+    
+    def create(self, validated_data):
+        """
+        Create and return a new `Snippet` instance, given the validated data.
+        """
+        return GroceryList.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        """
+        Update and return an existing `Snippet` instance, given the validated data.
+        """
+        instance.isPurchased = validated_data.get('isPurchased', instance.isPurchased)
+        instance.ingredient = validated_data.get('ingredient', instance.ingredient)
         instance.save()
         return instance
         

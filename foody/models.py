@@ -16,6 +16,7 @@ class Recipe(models.Model):
 class Direction(models.Model):
     recipe = models.ForeignKey(Recipe, related_name="directions", db_column='recipe')
     text = models.CharField(max_length=100, blank=True, default='Ball some meat')
+    
         
 class Ingredient(models.Model):
     recipe = models.ForeignKey(Recipe, related_name="ingredients", db_column='recipe')

@@ -21,7 +21,6 @@ class IngredientSerializer(serializers.ModelSerializer):
         return instance
         
 class GroceryListSerializer(serializers.ModelSerializer):
-    ingredient = IngredientSerializer(many=False, read_only=True)
     class Meta:
         model = GroceryItem
         fields = ('isPurchased', 'name', 'measurement', 'quantity')
@@ -55,11 +54,11 @@ class DirectionSerializer(serializers.ModelSerializer):
         
 class RecipeSerializer(serializers.ModelSerializer):
     
-    directions_set = DirectionSerializer(source='*', many=True, read_only=True)
+    directions = DirectionSerializer(source='*', many=True, read_only=True)
     ingredients = IngredientSerializer(source='*', many=True, read_only=True)
     class Meta:
         model = Recipe
-        fields = ('id', 'title', 'directions_set', 'ingredients')
+        fields = ('id', 'title', 'directions', 'ingredients')
         depth = 1
     
     def create(self, validated_data):

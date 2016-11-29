@@ -22,13 +22,13 @@ class Ingredient(models.Model):
     recipe = models.ForeignKey(Recipe, related_name="ingredients", db_column='recipe')
     name = models.CharField(max_length=100, blank=True, default='Meat')
     measurement = models.CharField(max_length=100, blank=True, default='cup')
-    quantity = models.CharField(max_length=100, blank=True, default='1')
+    quantity = models.FloatField(default=1)
     
 class GroceryItem(models.Model):
     isPurchased = models.BooleanField(default=False)
     name = models.CharField(max_length=100, blank=True, default='Meat')
     measurement = models.CharField(max_length=100, blank=True, default='cup')
-    quantity = models.CharField(max_length=100, blank=True, default='1')
+    quantity = models.FloatField(default=1)
 
 class MenuItem(models.Model):
     recipe = models.ForeignKey(Recipe, db_column='recipe')

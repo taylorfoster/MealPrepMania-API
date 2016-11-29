@@ -54,15 +54,19 @@ class DirectionSerializer(serializers.ModelSerializer):
         
 class RecipeSerializer(serializers.ModelSerializer):
     
-    directions = DirectionSerializer(source='*', many=True, read_only=True)
-    ingredients = IngredientSerializer(source='*', many=True, read_only=True)
+    directions = DirectionSerializer( many=True, read_only=True)
+    ingredients = IngredientSerializer( many=True, read_only=True)
     class Meta:
         model = Recipe
         fields = ('id', 'title', 'directions', 'ingredients')
-        depth = 1
     
     def create(self, validated_data):
-        return Recipe.objects.create(**validated_data)
+        direction_data = validated_data.pop('directions')
+        ingredient_data = validated_data.pop('ingredients')
+        recipe = Recipe.objects.create(**validated_data)
+        Direction.objects.create(recipe=recipe, **direction_data)
+        Ingredient.objects.create(recipe=recipe, **ingredient_data)
+        return recipe
 
     def update(self, instance, validated_data):
         instance.title = validated_data.get('title', instance.title)

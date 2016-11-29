@@ -16,7 +16,7 @@ from django.http import JsonResponse
 @api_view(['GET', 'POST'])
 def recipe_list(request, format=None):
     if request.method == 'GET':
-        recipes = Recipe.objects.all().values()
+        recipes = Recipe.objects.all()
         serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data)
         #return JsonResponse(serializer.data, safe=False)
@@ -46,7 +46,7 @@ def groceryList_list(request, format=None):
 @api_view(['GET', 'POST'])
 def menu_list(request, format=None):
     if request.method == 'GET':
-        menu = MenuItem.objects.all().values()
+        menu = MenuItem.objects.all()
         serializer = MenuItemSerializer(menu, many=True)
         return Response(serializer.data)
         #return JsonResponse(serializer.data, safe=False)

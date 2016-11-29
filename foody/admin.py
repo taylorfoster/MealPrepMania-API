@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Recipe, Ingredient, Direction
+from .models import Recipe, Ingredient, Direction, GroceryItem
 
 class IngredientsInline(admin.StackedInline):
     model = Ingredient
@@ -13,5 +13,8 @@ class DirectionsInline(admin.StackedInline):
 class RecipeAdmin(admin.ModelAdmin):
     fields = ['title']
     inlines = [IngredientsInline, DirectionsInline]
+    
+#class GroceryListAdmin(admin.ModelAdmin):
+   # fields = ['name', 'measurement', 'quantity', 'isPurchased']
 
 admin.site.register(Recipe, RecipeAdmin)

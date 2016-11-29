@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from foody.models import Recipe
-from foody.serializers import FoodySerializer
+from foody.serializers import RecipeSerializer
 from foody.models import Direction
 from foody.serializers import DirectionSerializer
 from foody.models import Ingredient
@@ -17,12 +17,12 @@ from django.http import JsonResponse
 def recipe_list(request, format=None):
     if request.method == 'GET':
         recipes = Recipe.objects.all().values()
-        serializer = FoodySerializer(recipes, many=True)
+        serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data)
         #return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
-        serializer = FoodySerializer(data=request.data)
+        serializer = RecipeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -67,11 +67,11 @@ def recipe_detail(request, pk, format=None):
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
-        serializer = FoodySerializer(recipe)
+        serializer = RecipeSerializer(recipe)
         return Response(serializer.data)
 
     elif request.method == 'PUT':
-        serializer = FoodySerializer(recipe, data=request.data)
+        serializer = RecipeSerializer(recipe, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

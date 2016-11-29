@@ -3,7 +3,7 @@ from foody.models import Recipe, Direction, Ingredient, GroceryItem, MenuItem#, 
 
         
 class IngredientSerializer(serializers.ModelSerializer):
-    #recipe = FoodySerializer(many=True, read_only=True)
+    #recipe = RecipeSerializer(many=True, read_only=True)
     class Meta:
         model = Ingredient
         fields = ('name', 'measurement', 'quantity',) #fields = ('recipe', 'name', 'measurement', 'quantity',)
@@ -39,7 +39,7 @@ class GroceryListSerializer(serializers.ModelSerializer):
         return instance
 
 class DirectionSerializer(serializers.ModelSerializer):
-    #recipe = FoodySerializer(many=True, read_only=True)
+    #recipe = RecipeSerializer(many=True, read_only=True)
     class Meta:
         model = Direction
         fields = ('text',) #fields = ('recipe', 'text',)
@@ -53,13 +53,14 @@ class DirectionSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
         
-class FoodySerializer(serializers.ModelSerializer):
+class RecipeSerializer(serializers.ModelSerializer):
     
-    directions = DirectionSerializer(many=True, read_only=True)
-    ingredients = IngredientSerializer(many=True, read_only=True)
+    directions_set = DirectionSerializer(source='*', many=True, read_only=True)
+    ingredients = IngredientSerializer(source='*', many=True, read_only=True)
     class Meta:
         model = Recipe
-        fields = ('id', 'title', 'directions', 'ingredients',)
+        fields = ('id', 'title', 'directions_set', 'ingredients')
+        depth = 1
     
     def create(self, validated_data):
         return Recipe.objects.create(**validated_data)
@@ -72,7 +73,7 @@ class FoodySerializer(serializers.ModelSerializer):
         return instance
         
 class MenuItemSerializer(serializers.ModelSerializer):
-    #recipe = FoodySerializer(many=True, read_only=True)
+    #recipe = RecipeSerializer(many=True, read_only=True)
     class Meta:
         model = MenuItem
         fields = ('recipe', 'date')

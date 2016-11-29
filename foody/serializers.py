@@ -58,8 +58,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientSerializer(source='*', many=True, read_only=True)
     class Meta:
         model = Recipe
-        #fields = ('id', 'title', 'directions', 'ingredients')
-        #depth = 1
+        fields = ('id', 'title', 'directions', 'ingredients')
+        depth = 1
     
     def create(self, validated_data):
         return Recipe.objects.create(**validated_data)

@@ -23,7 +23,7 @@ class IngredientSerializer(serializers.ModelSerializer):
 class GroceryListSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroceryItem
-        fields = ('isPurchased', 'name', 'measurement', 'quantity')
+        fields = ('id', 'isPurchased', 'name', 'measurement', 'quantity')
         
     
     def create(self, validated_data):

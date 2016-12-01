@@ -1,12 +1,11 @@
 from rest_framework import serializers
-from foody.models import Recipe, Direction, Ingredient, GroceryItem, MenuItem#, LANGUAGE_CHOICES, STYLE_CHOICES
+from foody.models import Recipe, Direction, Ingredient, GroceryItem, MenuItem
 
         
 class IngredientSerializer(serializers.ModelSerializer):
-    #recipe = RecipeSerializer(many=True, read_only=True)
     class Meta:
         model = Ingredient
-        fields = ('name', 'measurement', 'quantity',) #fields = ('recipe', 'name', 'measurement', 'quantity',)
+        fields = ('id', 'name', 'measurement', 'quantity',)
         
     
     def create(self, validated_data):
@@ -30,10 +29,15 @@ class GroceryListSerializer(serializers.ModelSerializer):
         return GroceryItem.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
+        print 'updating'
+        print(validated_data)
         instance.isPurchased = validated_data.get('isPurchased', instance.isPurchased)
         instance.name = validated_data.get('name', instance.name)
         instance.measurement = validated_data.get('measurement', instance.measurement)
         instance.quantity = validated_data.get('quantity', instance.quantity)
+        print 'hi'
+        print validated_data.get('name', instance.name)
+        print 'hi again'
         instance.save()
         return instance
 
@@ -41,7 +45,7 @@ class DirectionSerializer(serializers.ModelSerializer):
     #recipe = RecipeSerializer(many=True, read_only=True)
     class Meta:
         model = Direction
-        fields = ('text',) #fields = ('recipe', 'text',)
+        fields = ('id', 'text',) #fields = ('recipe', 'text',)
         
     def create(self, validated_data):
         return Direction.objects.create(**validated_data)
@@ -66,9 +70,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         recipe = Recipe.objects.create(**validated_data)
         Direction.objects.create(recipe=recipe, **direction_data)
         Ingredient.objects.create(recipe=recipe, **ingredient_data)
-        return recipe
+        return Recipe.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
+        instance.menuItem = validated_data.get('menuItem', instance.menuItem)
         instance.title = validated_data.get('title', instance.title)
         #instance.directions = validated_data.get('directions', instance.directions)
         #instance.ingredients = validated_data.get('ingredients', instance.ingredients)
@@ -76,16 +81,19 @@ class RecipeSerializer(serializers.ModelSerializer):
         return instance
         
 class MenuItemSerializer(serializers.ModelSerializer):
-    #recipe = RecipeSerializer(many=True, read_only=True)
+    recipe = RecipeSerializer(many=True, read_only=True)
     class Meta:
         model = MenuItem
-        fields = ('recipe', 'date')
+        fields = ('id', 'recipe', 'date')
         
     def create(self, validated_data):
-        return Direction.objects.create(**validated_data)
+        recipe_data = validated_data.pop('recipes')
+        menuItem = MenuItem.objects.create(**validated_data)
+        Recipe.objects.create(menuItem=menuItem, **recipe_data)
+        return menuItem.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.recipe = validated_data.get('recipe', instance.recipe)
+        #?????instance.recipe = validated_data.get('recipe', instance.recipe)
         instance.date = validated_data.get('date', instance.date)
         instance.save()
         return instance

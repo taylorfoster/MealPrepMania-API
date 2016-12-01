@@ -58,8 +58,8 @@ class DirectionSerializer(serializers.ModelSerializer):
         
 class RecipeSerializer(serializers.ModelSerializer):
     
-    directions = DirectionSerializer( many=True, read_only=True)
-    ingredients = IngredientSerializer( many=True, read_only=True)
+    directions = DirectionSerializer( many=True)
+    ingredients = IngredientSerializer( many=True)
     class Meta:
         model = Recipe
         fields = ('id', 'title', 'directions', 'ingredients')
@@ -75,13 +75,19 @@ class RecipeSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         instance.menuItem = validated_data.get('menuItem', instance.menuItem)
         instance.title = validated_data.get('title', instance.title)
-        #instance.directions = validated_data.get('directions', instance.directions)
-        #instance.ingredients = validated_data.get('ingredients', instance.ingredients)
+        instance.directions = validated_data.get('directions', instance.directions)  #commented these two
+        instance.ingredients = validated_data.get('ingredients', instance.ingredients)
         instance.save()
         return instance
         
 class MenuItemSerializer(serializers.ModelSerializer):
-    recipe = RecipeSerializer(many=True, read_only=True)
+    def clean_recipe(self, data):
+        print(data)
+        data['recipe'] = Recipe.objects.get(pk=data['recipe'])
+        print(data)
+        return data
+   
+    recipe = RecipeSerializer(many=True, required=False, validators=[clean_recipe])
     class Meta:
         model = MenuItem
         fields = ('id', 'recipe', 'date')
@@ -93,7 +99,10 @@ class MenuItemSerializer(serializers.ModelSerializer):
         return menuItem.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        #?????instance.recipe = validated_data.get('recipe', instance.recipe)
+        print(validated_data.get('recipe'))
+        print(validated_data.get('recipe')[0])
+        instance.recipe = Recipe.objects.get(pk=validated_data.get('recipe')[0])
+        #instance.recipe = validated_data.get('recipe', instance.recipe) #was commented
         instance.date = validated_data.get('date', instance.date)
         instance.save()
         return instance

@@ -17,7 +17,7 @@ from django.http import JsonResponse
 
 
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'PUT', 'POST'])
 def recipe_list(request, format=None):
     if request.method == 'GET':
         recipes = Recipe.objects.all()
@@ -28,6 +28,15 @@ def recipe_list(request, format=None):
     elif request.method == 'POST':
         serializer = RecipeSerializer(data=request.data)
         if serializer.is_valid():
+            print 'in post'
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+    elif request.method == 'PUT':
+        serializer = RecipeSerializer(data=request.data)
+        if serializer.is_valid():
+            print 'in put'
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -63,7 +72,7 @@ def menu_list(request, format=None):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'POST', 'DELETE'])
 def recipe_detail(request, pk, format=None):
     try:
         recipe = Recipe.objects.get(pk=pk)
@@ -74,9 +83,10 @@ def recipe_detail(request, pk, format=None):
         serializer = RecipeSerializer(recipe)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+    elif request.method == 'POST':
         serializer = RecipeSerializer(recipe, data=request.data)
         if serializer.is_valid():
+            print 'Put recipe'
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -112,7 +122,7 @@ def groceryList_detail(request, pk, format=None):
         groceryList.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
         
-@api_view(['GET', 'PUT', 'DELETE'])
+@api_view(['GET', 'POST', 'DELETE'])
 def menu_detail(request, pk, format=None):
     try:
         menu = MenuItem.objects.get(pk=pk)
@@ -123,9 +133,15 @@ def menu_detail(request, pk, format=None):
         serializer = MenuItemSerializer(menu)
         return Response(serializer.data)
 
-    elif request.method == 'PUT':
+    elif request.method == 'POST':
         serializer = MenuItemSerializer(menu, data=request.data)
+        #recipe = Recipe.objects.get(pk = request.data['recipe'])
+        #print(recipe)
+        #request.data['recipe'] = request.data['recipe'],]
+        print request.data
         if serializer.is_valid():
+            print 'valid'
+            print serializer.validated_data
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

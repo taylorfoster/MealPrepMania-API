@@ -12,6 +12,7 @@ from foody.serializers import GroceryListSerializer
 from foody.models import MenuItem
 from foody.serializers import MenuItemSerializer
 from django.http import JsonResponse
+
 #from django.utils.decorators import method_decorator
 #from django.views.decorators.csrf import csrf_exempt
 
@@ -86,7 +87,8 @@ def recipe_detail(request, pk, format=None):
     elif request.method == 'POST':
         serializer = RecipeSerializer(recipe, data=request.data)
         if serializer.is_valid():
-            print 'Put recipe'
+            print 'Post recipe'
+            print request.data
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -135,6 +137,7 @@ def menu_detail(request, pk, format=None):
 
     elif request.method == 'POST':
         serializer = MenuItemSerializer(menu, data=request.data)
+        
         #recipe = Recipe.objects.get(pk = request.data['recipe'])
         #print(recipe)
         #request.data['recipe'] = request.data['recipe'],]

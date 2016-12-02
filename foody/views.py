@@ -66,6 +66,8 @@ def menu_list(request, format=None):
         #return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
+        print 'menu list post'
+        print request.data
         serializer = MenuItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()

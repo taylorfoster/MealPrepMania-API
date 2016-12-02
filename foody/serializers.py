@@ -108,38 +108,21 @@ class MenuItemSerializer(serializers.ModelSerializer):
         fields = ('id', 'recipe', 'date')
         
     def create(self, validated_data):
-        print 'create'
-        recipe_data = validated_data.pop('recipes')
+        print 'create menu item'
+        recipe_data = validated_data.pop('recipe')
         menuItem = MenuItem.objects.create(**validated_data)
-        Recipe.objects.create(menuItem=menuItem, **recipe_data)
+        print(recipe_data)
+        for i in range(len(recipe_data)):
+            print(recipe_data[i])
+            recipe = Recipe.objects.get(title=recipe_data[i]["title"])
+            menuItem.recipe.add(recipe)
+        menuItem.save()
+        #Recipe.objects.create(menuItem=menuItem, **recipe_data)
         return menuItem #.objects.create(**validated_data)
         
     def update(self, instance, validated_data):
-        print 'meh'
-        """stuff = validated_data.get('recipe')[0]
-        print 'wtf'
-        print stuff
-        recipeID = getattr(stuff, 'id')
-        """
-        
-        #print recipeID
-        #print(validated_data.get('recipe'))
-        #print(validated_data.get('recipe')[0]["id"])
-        instance.recipe = instance.recipe
-        #instance.recipe = Recipe.objects.get(pk=validated_data.get('recipe')[0])
-        #instance.recipe = validated_data.get('recipe', instance.recipe) #was commented
+        print 'update menu item'
         instance.date = validated_data.get('date', instance.date)
-        """
-        recipes = validated_data.get('recipe', 'nope')
-        instance.recipe.clear()
-        for i in range(len(recipes)):
-            print recipes[i]
-            serializer = RecipeSerializer(data=recipes[i])
-            if serializer.is_valid():
-                serializer.save()
-            recipe = Recipe.objects.create(**serializer.validated_data)
-            instance.recipe.add(recipe)
-        """
         instance.save()
         return instance
 

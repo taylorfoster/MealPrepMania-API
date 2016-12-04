@@ -18,12 +18,12 @@ class Recipe(models.Model):
         ordering = ('title',)
     
 class Direction(models.Model):
-    recipe = models.ForeignKey(Recipe, related_name="directions", db_column='recipe', null=True, blank=True)
+    recipe = models.ForeignKey(Recipe, related_name="directions", db_column='recipe', null=True, blank=True, default=None)
     text = models.CharField(max_length=100, blank=True, null=True, default='Ball some meat')
     
         
 class Ingredient(models.Model):
-    recipe = models.ForeignKey(Recipe, related_name="ingredients", db_column='recipe', null=True, blank=True)
+    recipe = models.ForeignKey(Recipe, related_name="ingredients", db_column='recipe', null=True, blank=True, default=None)
     name = models.CharField(max_length=100, blank=True, null=True, default='Meat')
     measurement = models.CharField(max_length=100, blank=True, null=True, default='cup')
     quantity = models.FloatField(default=1.0)

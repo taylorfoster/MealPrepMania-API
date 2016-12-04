@@ -13,10 +13,6 @@ from foody.models import MenuItem
 from foody.serializers import MenuItemSerializer
 from django.http import JsonResponse
 
-#from django.utils.decorators import method_decorator
-#from django.views.decorators.csrf import csrf_exempt
-
-
 
 @api_view(['GET', 'PUT', 'POST'])
 def recipe_list(request, format=None):
@@ -24,12 +20,10 @@ def recipe_list(request, format=None):
         recipes = Recipe.objects.all()
         serializer = RecipeSerializer(recipes, many=True)
         return Response(serializer.data)
-        #return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
         serializer = RecipeSerializer(data=request.data)
         if serializer.is_valid():
-            print 'in post'
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -37,7 +31,6 @@ def recipe_list(request, format=None):
     elif request.method == 'PUT':
         serializer = RecipeSerializer(data=request.data)
         if serializer.is_valid():
-            print 'in put'
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -48,7 +41,6 @@ def groceryList_list(request, format=None):
         groceryList = GroceryItem.objects.all()
         serializer = GroceryListSerializer(groceryList, many=True)
         return Response(serializer.data)
-        #return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
         serializer = GroceryListSerializer(data=request.data)
@@ -63,11 +55,8 @@ def menu_list(request, format=None):
         menu = MenuItem.objects.all()
         serializer = MenuItemSerializer(menu, many=True)
         return Response(serializer.data)
-        #return JsonResponse(serializer.data, safe=False)
 
     elif request.method == 'POST':
-        print 'menu list post'
-        print request.data
         serializer = MenuItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -89,8 +78,6 @@ def recipe_detail(request, pk, format=None):
     elif request.method == 'POST':
         serializer = RecipeSerializer(recipe, data=request.data)
         if serializer.is_valid():
-            print 'Post recipe'
-            print request.data
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -111,13 +98,8 @@ def groceryList_detail(request, pk, format=None):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        print 'post'
-        print request.data
-        print 'done with data'
         serializer = GroceryListSerializer(groceryList, data=request.data)
         if serializer.is_valid():
-            print 'valid'
-            print serializer.validated_data
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -139,14 +121,7 @@ def menu_detail(request, pk, format=None):
 
     elif request.method == 'POST':
         serializer = MenuItemSerializer(menu, data=request.data)
-        
-        #recipe = Recipe.objects.get(pk = request.data['recipe'])
-        #print(recipe)
-        #request.data['recipe'] = request.data['recipe'],]
-        print request.data
         if serializer.is_valid():
-            print 'valid'
-            print serializer.validated_data
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

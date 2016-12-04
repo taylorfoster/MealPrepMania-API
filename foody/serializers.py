@@ -27,22 +27,14 @@ class GroceryListSerializer(serializers.ModelSerializer):
         return GroceryItem.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        print 'updating'
-        print(validated_data)
         instance.isPurchased = validated_data.get('isPurchased', instance.isPurchased)
         instance.name = validated_data.get('name', instance.name)
         instance.measurement = validated_data.get('measurement', instance.measurement)
         instance.quantity = validated_data.get('quantity', instance.quantity)
-        """
-        print 'hi'
-        print validated_data.get('name', instance.name)
-        print 'hi again'
-        """
         instance.save()
         return instance
 
 class DirectionSerializer(serializers.ModelSerializer):
-    #recipe = RecipeSerializer(many=True, read_only=True)
     class Meta:
         model = Direction
         fields = ('id', 'text',)
@@ -68,21 +60,13 @@ class RecipeSerializer(serializers.ModelSerializer):
         ingredient_data = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(**validated_data)
         recipe.save()
-        #Direction.objects.create(recipe=recipe, **direction_data)
-        #Ingredient.objects.create(recipe=recipe, **ingredient_data)
-        return recipe #.objects.create(**validated_data)
+        return recipe
 
     def update(self, instance, validated_data):
-        print 'validated data'
-        print validated_data
-        print 'end val'
-        #instance.menuItem = validated_data.get('menuItem', instance.menuItem)
-        print 'error here?'
         instance.title = validated_data.get('title', instance.title)
         directions = validated_data.get('directions', 'nope')
         instance.directions.clear()
         instance.ingredients.clear()
-        #print directions
         for i in range(len(directions)):
             serializer = DirectionSerializer(data=directions[i])
             if serializer.is_valid():
@@ -90,9 +74,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             direction = Direction.objects.create(**serializer.validated_data)
             instance.directions.add(direction)
         ingredients = validated_data.get('ingredients', 'nope')
-        print ingredients
         for i in range(len(ingredients)):
-            print ingredients[i]
             serializer = IngredientSerializer(data=ingredients[i])
             if serializer.is_valid():
                 serializer.save()
@@ -108,20 +90,15 @@ class MenuItemSerializer(serializers.ModelSerializer):
         fields = ('id', 'recipe', 'date')
         
     def create(self, validated_data):
-        print 'create menu item'
         recipe_data = validated_data.pop('recipe')
         menuItem = MenuItem.objects.create(**validated_data)
-        print(recipe_data)
         for i in range(len(recipe_data)):
-            print(recipe_data[i])
             recipe = Recipe.objects.get(title=recipe_data[i]["title"])
             menuItem.recipe.add(recipe)
         menuItem.save()
-        #Recipe.objects.create(menuItem=menuItem, **recipe_data)
-        return menuItem #.objects.create(**validated_data)
+        return menuItem
         
     def update(self, instance, validated_data):
-        print 'update menu item'
         instance.date = validated_data.get('date', instance.date)
         instance.save()
         return instance

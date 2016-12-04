@@ -10,7 +10,7 @@ class MenuItem(models.Model):
 
 class Recipe(models.Model):
     menuItem = models.ForeignKey(MenuItem, related_name="recipe", db_column='menuItem', null=True, blank=True)
-    title = models.CharField(max_length=100, blank=True, default='Meatballs')
+    title = models.CharField(max_length=100, blank=True, default='Recipe Title')
     def __str__(self):
         return self.title
     
